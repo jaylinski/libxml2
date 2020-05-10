@@ -387,28 +387,7 @@ echo Checking zlib
 dnl Checks for zlib library.
 
 WITH_ZLIB=0
-if test "$with_zlib" = "no"; then
-    echo "Disabling compression support"
-else
-    AC_CHECK_HEADERS(zlib.h,
-        [SAVE_LDFLAGS="${LDFLAGS}"
-	 LDFLAGS="-L${Z_DIR}/lib"
-	AC_CHECK_LIB(z, gzread,[
-	    AC_DEFINE([HAVE_LIBZ], [1], [Have compression library])
-	    WITH_ZLIB=1
-	    if test "x${Z_DIR}" != "x"; then
-		Z_CFLAGS="-I${Z_DIR}/include"
-		Z_LIBS="-L${Z_DIR}/lib -lz"
-		[case ${host} in
-		    *-*-solaris*)
-			Z_LIBS="-L${Z_DIR}/lib -R${Z_DIR}/lib -lz"
-			;;
-		esac]
-	    else
-		Z_LIBS="-lz"
-	    fi])
-	 LDFLAGS="${SAVE_LDFLAGS}"])
-fi
+echo "Disabling zlib compression support"
 
 AC_SUBST(Z_CFLAGS)
 AC_SUBST(Z_LIBS)
@@ -419,40 +398,7 @@ echo Checking lzma
 dnl Checks for lzma library.
 
 WITH_LZMA=0
-if test "$with_lzma" = "no"; then
-    echo "Disabling compression support"
-else
-    # Try pkg-config first so that static linking works.
-    # If this succeeeds, we ignore the WITH_LZMA directory.
-    PKG_CHECK_MODULES([LZMA],[liblzma],
-        [have_liblzma=yes],
-        [have_liblzma=no])
-
-     # If pkg-config failed, fall back to AC_CHECK_LIB. This
-     # will not pick up the necessary LIBS flags for liblzma's
-     # private dependencies, though, so static linking may fail.
-     if test "x$have_liblzma" = "xno"; then
-         AC_CHECK_HEADERS(lzma.h,
-	    [SAVE_LDFLAGS="${LDFLAGS}"
-	     LDFLAGS="-L${LZMA_DIR}/lib"
-            AC_CHECK_LIB(lzma, lzma_code,[
-                have_liblzma=yes
-                if test "x${LZMA_DIR}" != "x"; then
-                    LZMA_CFLAGS="-I${LZMA_DIR}/include"
-                    LZMA_LIBS="-L${LZMA_DIR}/lib -llzma"
-                else
-                    LZMA_LIBS="-llzma"
-                fi],
-                [have_liblzma=no])
-	     LDFLAGS="${SAVE_LDFLAGS}"])
-    fi
-
-    # Found the library via either method?
-    if test "x$have_liblzma" = "xyes"; then
-        AC_DEFINE([HAVE_LIBLZMA], [1], [Have compression library])
-        WITH_LZMA=1
-    fi
-fi
+echo "Disabling lzma compression support"
 
 AC_SUBST(LZMA_CFLAGS)
 AC_SUBST(LZMA_LIBS)
